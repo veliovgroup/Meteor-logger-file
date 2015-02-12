@@ -1,6 +1,6 @@
 Meteor file adapter for ostrio:logger
 ========
-Simply put your logs into file within [ostrio:logger](https://atmospherejs.com/ostrio/logger) package
+Simply store application logs into file within [ostrio:logger](https://atmospherejs.com/ostrio/logger) package
 
 Installation:
 ========
