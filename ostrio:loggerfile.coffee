@@ -8,7 +8,7 @@ Meteor.log.add "File", (level, message, data = null, userId) ->
     data = null if data is undefined or data is "undefined" or !data
     data = JSON.stringify(Meteor.log.antiCircular(data)) if data
 
-    fileName = "#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
+    fileName = Meteor.log.file.fileNameFormat time
 
     if !fs.existsSync "#{Meteor.log.file.path}/#{fileName}"
       fs.createFileSync "#{Meteor.log.file.path}/#{fileName}", 0o0750
@@ -27,6 +27,9 @@ Meteor.log.add "File", (level, message, data = null, userId) ->
     Meteor.log.file.path = path
     Meteor.log.file.format = (time, level, message, data, userId) ->
       "#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()} #{time.getHours()}:#{time.getMinutes()}:#{time.getSeconds()} | [#{level}] | Message: \"#{message}\" | User: #{userId} | data: #{data}\r\n"
+
+    Meteor.log.file.fileNameFormat = (time) ->
+      "#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
 
 
     if !fs.existsSync "#{path}"

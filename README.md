@@ -22,6 +22,8 @@ Meteor.log.debug(message, data, userId);
 Meteor.log.error(message, data, userId);
 Meteor.log.fatal(message, data, userId);
 Meteor.log.warn(message, data, userId);
+Meteor.log.trace(message, data, userId);
+Meteor.log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
 ```
 
 ##### Activate and set adapter settings [`Server` & `Client`]
@@ -46,4 +48,19 @@ To change format set `Meteor.log.file.format` function
 if Meteor.isServer
   Meteor.log.file.format = (time, level, message, data, userId) ->
     "#{+time} [#{level}]: \"#{message}\" \r\n"
+```
+
+##### Change file name format [`Server`]
+Default format:
+```coffeescript
+# New file will be created every day
+"#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
+```
+
+To change format set `Meteor.log.file.fileNameFormat` function
+```coffeescript
+if Meteor.isServer
+  Meteor.log.file.fileNameFormat = (time) ->
+    # New file will be created every hour
+    "#{time.getHours()}_#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
 ```
