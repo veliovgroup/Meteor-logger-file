@@ -26,10 +26,12 @@ Meteor.log.add "File", (level, message, data = null, userId) ->
 
     Meteor.log.file.path = path
     Meteor.log.file.format = (time, level, message, data, userId) ->
-      "#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()} #{time.getHours()}:#{time.getMinutes()}:#{time.getSeconds()} | [#{level}] | Message: \"#{message}\" | User: #{userId} | data: #{data}\r\n"
+      month = time.getMonth() + 1
+      "#{time.getDate()}-#{month}-#{time.getFullYear()} #{time.getHours()}:#{time.getMinutes()}:#{time.getSeconds()} | [#{level}] | Message: \"#{message}\" | User: #{userId} | data: #{data}\r\n"
 
     Meteor.log.file.fileNameFormat = (time) ->
-      "#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
+      month = time.getMonth() + 1
+      "#{time.getDate()}-#{month}-#{time.getFullYear()}.log"
 
 
     if !fs.existsSync "#{path}"
