@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:loggerfile',
-  version: '0.0.5',
+  version: '0.0.6',
   summary: 'Simply store application logs into file within ostrio:logger package',
   git: 'https://github.com/VeliovGroup/Meteor-logger-file',
   documentation: 'README.md'

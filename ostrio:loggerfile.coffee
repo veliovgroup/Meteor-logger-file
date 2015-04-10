@@ -21,7 +21,7 @@ Meteor.log.add "File", (level, message, data = null, userId) ->
     Meteor.log.file =
       path: ""
 
-    storageDir = (if (process.env.NODE_ENV is "development") then "/static/logs" else "/builded/bundle/programs/server/assets/app/logs")
+    storageDir = (if (process.env.NODE_ENV is "development") then "/static/logs" else "/programs/server/assets/app/logs")
     path = process.env.PWD + storageDir
 
     Meteor.log.file.path = path
