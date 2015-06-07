@@ -1,7 +1,7 @@
 coffeescript@1.0.6
 meteor@1.1.6
-ostrio:logger@0.0.7
-ostrio:loggerfile@0.0.10
+ostrio:logger@0.0.8
+ostrio:loggerfile@0.0.11
 ostrio:meteor-root@1.0.0
 reactive-var@1.0.5
 tracker@1.0.7
