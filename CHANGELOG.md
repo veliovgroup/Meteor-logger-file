@@ -1,5 +1,8 @@
 Changelog
 =========
+ - [[`v1.0.1`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/v1.0.1)] *03/23/2016*
+   - Dependencies update
+   - Better Windows support
  - [[`v1.0.0`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/v1.0.0)] *07/01/2015*
    - Deps packages update see [ostrio:logger@1.0.0](https://github.com/VeliovGroup/Meteor-logger/releases/tag/v1.0.0)
  - [[`v0.0.11`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/v0.0.11)] *06/07/2015*
