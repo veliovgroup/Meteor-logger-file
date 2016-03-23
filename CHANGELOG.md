@@ -1,6 +1,6 @@
 Changelog
 =========
- - [[`v1.0.1`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/v1.0.1)] *03/23/2016*
+ - [[`v1.0.1`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/1.0.1)] *03/23/2016*
    - Dependencies update
    - Better Windows support
  - [[`v1.0.0`](https://github.com/VeliovGroup/Meteor-logger-file/releases/tag/v1.0.0)] *07/01/2015*
