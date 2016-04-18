@@ -1,66 +1,102 @@
-Meteor file adapter for ostrio:logger
+Logging: To File
 ========
 Simply store application logs into file within [ostrio:logger](https://atmospherejs.com/ostrio/logger) package
+
+*Whenever you log message(s) on client or sever, it goes directly to log-file on your server.*
 
 Installation:
 ========
 ```shell
+meteor add ostrio:logger # If not yet installed
 meteor add ostrio:loggerfile
 ```
 
 Usage
 ========
-##### Log [`Server` & `Client`]
+##### Initialization [*Isomorphic*]
+`new LoggerFile(LoggerInstance, options)`
+ - `LoggerInstance` {*Logger*} - from `new Logger()`
+ - `options` {*Object*}
+ - `options.fileNameFormat` {*Function*} - Log file name, use to adjust file creation frequency, arguments:
+   - `time` {*Date*}
+ - `options.format` {*Function*} - Log record format, arguments:
+   - `time` {*Date*}
+   - `level` {*String*} - 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO'
+   - `message` {*String*}
+   - `data` {*Object*}
+   - `userId` {*String*} - set if user is logged in and package `accounts-base` is installed
+   - Note: Do not forget `\r\n` at the end of record-line
+ - `path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, note: do not use '~' (path relative to user)!
+
+Example:
 ```javascript
-/*
-  message {String} - Any text message
-  data    {Object} - [optional] Any additional info as object
-  userId  {String} - [optional] Current user id
- */
-Meteor.log.info(message, data, userId);
-Meteor.log.debug(message, data, userId);
-Meteor.log.error(message, data, userId);
-Meteor.log.fatal(message, data, userId);
-Meteor.log.warn(message, data, userId);
-Meteor.log.trace(message, data, userId);
-Meteor.log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
+this.Log = new Logger();
+var LogFile = new LoggerFile(Log, {
+  fileNameFormat: function(time) {
+    /* Create log-files hourly */
+    return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
+  },
+  format: function(time, level, message, data, userId) {
+    /* Omit Date and hours from messages */
+    return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
+  },
+  path: '/data/logs/' /* Use absolute storage path */
+});
 ```
 
-##### Activate and set adapter settings [`Server` & `Client`]
+##### Activate and set adapter settings [*Isomorphic*]
 ```javascript
-Meteor.log.rule('File', 
-{
+this.Log = new Logger();
+new LoggerFile(Log, {}).enable({
   enable: true,
-  filter: ['ERROR', 'FATAL', 'WARN'], /* Filters: 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', '*' */
+  filter: ['ERROR', 'FATAL', 'WARN'], /* Filters: 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', '*' */
   client: false, /* This allows to call, but not execute on Client */
   server: true   /* Calls from client will be executed on Server */
 });
 ```
 
-##### Change string format [`Server`]
-Default format:
-```coffeescript
-"#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()} #{time.getHours()}:#{time.getMinutes()}:#{time.getSeconds()} | [#{level}] | Message: \"#{message}\" | User: #{userId} | data: #{data}\r\n"
+##### Log [*Isomorphic*]
+```javascript
+this.Log = new Logger();
+new LoggerFile(Log).enable();
+
+/*
+  message {String} - Any text message
+  data    {Object} - [optional] Any additional info as object
+  userId  {String} - [optional] Current user id
+ */
+Log.info(message, data, userId);
+Log.debug(message, data, userId);
+Log.error(message, data, userId);
+Log.fatal(message, data, userId);
+Log.warn(message, data, userId);
+Log.trace(message, data, userId);
+Log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
+
+/* Use with throw */
+throw Log.error(message, data, userId);
 ```
 
-To change format set `Meteor.log.file.format` function
-```coffeescript
-if Meteor.isServer
-  Meteor.log.file.format = (time, level, message, data, userId) ->
-    "#{+time} [#{level}]: \"#{message}\" \r\n"
-```
+##### Use multiple logger(s) with different settings:
+```javascript
+this.Log1 = new Logger();
+this.Log2 = new Logger();
 
-##### Change file name format [`Server`]
-Default format:
-```coffeescript
-# New file will be created every day
-"#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
-```
+new LoggerFile(Log1).enable({
+  client: false,
+  server: true
+});
 
-To change format set `Meteor.log.file.fileNameFormat` function
-```coffeescript
-if Meteor.isServer
-  Meteor.log.file.fileNameFormat = (time) ->
-    # New file will be created every hour
-    "#{time.getHours()}_#{time.getDate()}-#{time.getMonth()}-#{time.getFullYear()}.log"
+new LoggerFile(Log2, {
+  fileNameFormat: function(time) {
+    return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
+  },
+  format: function(time, level, message, data, userId) {
+    return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
+  },
+  path: '/data/logs/'
+}).enable({
+  client: false,
+  server: true
+});
 ```
