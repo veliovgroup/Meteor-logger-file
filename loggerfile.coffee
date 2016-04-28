@@ -2,6 +2,10 @@ NOOP = -> return
 if Meteor.isServer
   fs = Npm.require "fs-extra"
 
+###
+@class LoggerFile
+@summary File (FS) adapter for ostrio:logger (Logger)
+###
 class LoggerFile
   constructor: (@logger, @options = {}) ->
     check @logger, Match.OneOf Logger, Object

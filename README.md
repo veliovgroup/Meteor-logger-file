@@ -1,6 +1,6 @@
 Logging: To File
 ========
-Simply store application logs into file within [ostrio:logger](https://atmospherejs.com/ostrio/logger) package
+Store application log messages (from Client & Server) into the file. By default log-file created daily, you can easily adjust it to hourly or monthly or any other period, via `fileNameFormat`.
 
 *Whenever you log message(s) on client or sever, it goes directly to log-file on your server.*
 
@@ -10,6 +10,13 @@ Installation:
 meteor add ostrio:logger # If not yet installed
 meteor add ostrio:loggerfile
 ```
+
+Support this awesome package:
+========
+ - Star on [GitHub](https://github.com/VeliovGroup/Meteor-logger-file)
+ - Star on [Atmosphere](https://atmospherejs.com/ostrio/loggerfile)
+ - [Tweet](https://twitter.com/share?url=https://github.com/VeliovGroup/Meteor-logger-file&text=Store%20%23meteorjs%20log%20messages%20(from%20Client%20%26%20Server)%20into%20the%20file%20%23javascript%20%23programming%20%23webdev%20via%20%40VeliovGroup)
+ - Share on [Facebook](https://www.facebook.com/sharer.php?u=https://github.com/VeliovGroup/Meteor-logger-file)
 
 Usage
 ========
@@ -21,7 +28,7 @@ Usage
    - `time` {*Date*}
  - `options.format` {*Function*} - Log record format, arguments:
    - `time` {*Date*}
-   - `level` {*String*} - 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO'
+   - `level` {*String*} - 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE'
    - `message` {*String*}
    - `data` {*Object*}
    - `userId` {*String*} - set if user is logged in and package `accounts-base` is installed
@@ -30,8 +37,9 @@ Usage
 
 Example:
 ```javascript
-this.Log = new Logger();
-var LogFile = new LoggerFile(Log, {
+this.log = new Logger(); // Initialize Logger
+// Initialize LoggerFile:
+var LogFile = new LoggerFile(log, {
   fileNameFormat: function(time) {
     /* Create log-files hourly */
     return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
@@ -42,12 +50,14 @@ var LogFile = new LoggerFile(Log, {
   },
   path: '/data/logs/' /* Use absolute storage path */
 });
+
+LogFile.enable(); // Enable LoggerFile with default settings
 ```
 
-##### Activate and set adapter settings [*Isomorphic*]
+##### Activate and set adapter settings: [*Isomorphic*]
 ```javascript
-this.Log = new Logger();
-new LoggerFile(Log, {}).enable({
+this.log = new Logger();
+new LoggerFile(log, {}).enable({
   enable: true,
   filter: ['ERROR', 'FATAL', 'WARN'], /* Filters: 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', '*' */
   client: false, /* This allows to call, but not execute on Client */
@@ -55,39 +65,49 @@ new LoggerFile(Log, {}).enable({
 });
 ```
 
-##### Log [*Isomorphic*]
+##### Log message: [*Isomorphic*]
 ```javascript
-this.Log = new Logger();
-new LoggerFile(Log).enable();
+this.log = new Logger();
+new LoggerFile(log).enable();
 
 /*
   message {String} - Any text message
   data    {Object} - [optional] Any additional info as object
   userId  {String} - [optional] Current user id
  */
-Log.info(message, data, userId);
-Log.debug(message, data, userId);
-Log.error(message, data, userId);
-Log.fatal(message, data, userId);
-Log.warn(message, data, userId);
-Log.trace(message, data, userId);
-Log._(message, data, userId); //--> Shortcut for logging without message, e.g.: simple plain log
+log.info(message, data, userId);
+log.debug(message, data, userId);
+log.error(message, data, userId);
+log.fatal(message, data, userId);
+log.warn(message, data, userId);
+log.trace(message, data, userId);
+log._(message, data, userId); //--> Plain log without level
 
 /* Use with throw */
-throw Log.error(message, data, userId);
+throw log.error(message, data, userId);
+```
+
+##### Catch-all Client's errors example: [*CLIENT*]
+```javascript
+/* Store original window.onerror */
+var _WoE = window.onerror;
+
+window.onerror = function(msg, url, line) {
+  log.error(msg, {file: url, onLine: line});
+  if (_WoE) {
+    _WoE.apply(this, arguments);
+  }
+};
 ```
 
 ##### Use multiple logger(s) with different settings:
 ```javascript
-this.Log1 = new Logger();
-this.Log2 = new Logger();
+this.log1 = new Logger();
+this.log2 = new Logger();
 
-new LoggerFile(Log1).enable({
-  client: false,
-  server: true
-});
+new LoggerFile(log1).enable();
 
-new LoggerFile(Log2, {
+new LoggerFile(log2, {
   fileNameFormat: function(time) {
     return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
   },
@@ -95,8 +115,5 @@ new LoggerFile(Log2, {
     return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
   },
   path: '/data/logs/'
-}).enable({
-  client: false,
-  server: true
-});
+}).enable();
 ```
