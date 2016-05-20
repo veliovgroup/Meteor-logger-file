@@ -99,7 +99,7 @@ log._(message, data, userId); //--> Plain log without level
 throw log.error(message, data, userId);
 ```
 
-##### Catch-all Client's errors example: [*CLIENT*]
+##### Catch-all Client's errors example: [*Client*]
 ```javascript
 /* Store original window.onerror */
 var _WoE = window.onerror;
