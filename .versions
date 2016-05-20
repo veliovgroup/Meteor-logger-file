@@ -10,8 +10,8 @@ ejson@1.0.11
 meteor@1.1.14
 modules@0.6.1
 modules-runtime@0.6.3
-ostrio:logger@1.1.1
-ostrio:loggerfile@1.1.1
+ostrio:logger@1.1.2
+ostrio:loggerfile@1.1.2
 ostrio:meteor-root@1.0.3
 promise@0.6.7
 random@1.0.9

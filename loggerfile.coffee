@@ -9,7 +9,7 @@ if Meteor.isServer
 class LoggerFile
   constructor: (@logger, @options = {}) ->
     check @logger, Match.OneOf Logger, Object
-    check @options, Object
+    check @options, Match.Optional Object
 
     self = @
     if Meteor.isServer
@@ -87,9 +87,16 @@ class LoggerFile
     , true
 
   enable: (rule = {}) ->
-    check rule, Object
+    check rule, {
+      enable: Match.Optional Boolean
+      client: Match.Optional Boolean
+      server: Match.Optional Boolean
+      filter: Match.Optional [String]
+    }
+
     rule.enable ?= true
     rule.client ?= false
     rule.server ?= true
+
     @logger.rule 'File', rule
     return @

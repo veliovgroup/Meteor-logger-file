@@ -33,11 +33,22 @@ Usage
    - `data` {*Object*}
    - `userId` {*String*} - set if user is logged in and package `accounts-base` is installed
    - Note: Do not forget `\r\n` at the end of record-line
- - `path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, note: do not use '~' (path relative to user)!
+ - `options.path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, note: do not use '~' (path relative to user)!
 
 Example:
 ```javascript
-this.log = new Logger(); // Initialize Logger
+// Initialize Logger:
+this.log = new Logger();
+
+// Initialize LoggerFile and enable with default settings:
+(new LoggerFile(log)).enable();
+```
+
+Example 2:
+```javascript
+// Initialize Logger
+this.log = new Logger();
+
 // Initialize LoggerFile:
 var LogFile = new LoggerFile(log, {
   fileNameFormat: function(time) {
@@ -51,13 +62,14 @@ var LogFile = new LoggerFile(log, {
   path: '/data/logs/' /* Use absolute storage path */
 });
 
-LogFile.enable(); // Enable LoggerFile with default settings
+// Enable LoggerFile with default settings
+LogFile.enable();
 ```
 
 ##### Activate and set adapter settings: [*Isomorphic*]
 ```javascript
 this.log = new Logger();
-new LoggerFile(log, {}).enable({
+(new LoggerFile(log)).enable({
   enable: true,
   filter: ['ERROR', 'FATAL', 'WARN'], /* Filters: 'ERROR', 'FATAL', 'WARN', 'DEBUG', 'INFO', 'TRACE', '*' */
   client: false, /* This allows to call, but not execute on Client */
@@ -68,7 +80,7 @@ new LoggerFile(log, {}).enable({
 ##### Log message: [*Isomorphic*]
 ```javascript
 this.log = new Logger();
-new LoggerFile(log).enable();
+(new LoggerFile(log)).enable();
 
 /*
   message {String} - Any text message
@@ -105,9 +117,9 @@ window.onerror = function(msg, url, line) {
 this.log1 = new Logger();
 this.log2 = new Logger();
 
-new LoggerFile(log1).enable();
+(new LoggerFile(log1)).enable();
 
-new LoggerFile(log2, {
+(new LoggerFile(log2, {
   fileNameFormat: function(time) {
     return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
   },
@@ -115,5 +127,5 @@ new LoggerFile(log2, {
     return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
   },
   path: '/data/logs/'
-}).enable();
+})).enable();
 ```
