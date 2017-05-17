@@ -1,8 +1,15 @@
 Logging: To File
 ========
-Store application log messages (from both *Client* and *Server*) in the file. By default log file rotated daily, you can easily adjust it to hourly, monthly, or any other period, via `fileNameFormat`.
+File adapter for [logger driver](https://github.com/VeliovGroup/Meteor-logger). Store application log messages (from both *Client* and *Server*) in the file. By default log file is rotated daily, you can easily adjust it to hourly, monthly, or any other period, via `fileNameFormat`.
 
 *Whenever you log message(s) on Client or Sever, it goes directly to log file on your Server.*
+
+Features:
+ - 100% tests coverage;
+ - Flexible log level filters;
+ - `userId` is automatically passed and logged if logs is associated with logged-in user;
+ - Pass logs from *Client* to *Server*;
+ - Catch all browser's errors.
 
 Installation:
 ========
