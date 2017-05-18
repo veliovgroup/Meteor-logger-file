@@ -124,9 +124,6 @@ throw log.error(message, data, userId);
 
 ### Catch-all Client's errors example: [*Client*]
 ```jsx
-import { Logger }     from 'meteor/ostrio:logger';
-import { LoggerFile } from 'meteor/ostrio:loggerfile';
-
 /* Store original window.onerror */
 const _GlobalErrorHandler = window.onerror;
 
