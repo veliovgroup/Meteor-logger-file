@@ -2,13 +2,8 @@ import { _ }            from 'meteor/underscore';
 import { Meteor }       from 'meteor/meteor';
 import { Logger }       from 'meteor/ostrio:logger';
 import { check, Match } from 'meteor/check';
-
-let fs     = {};
+import fs               from 'fs-extra';
 const NOOP = () => {};
-
-if (Meteor.isServer) {
-  fs = require('fs-extra');
-}
 
 /*
  * @class LoggerFile
@@ -22,32 +17,30 @@ class LoggerFile {
     this.logger  = logger;
     this.options = options;
 
-    if (Meteor.isServer) {
-      /* fileNameFormat - Log file name */
-      if (this.options.fileNameFormat) {
-        if (!_.isFunction(this.options.fileNameFormat)) {
-          throw new Meteor.Error('[LoggerFile] [options.fileNameFormat] Must be a Function!');
-        }
-      } else {
-        this.options.fileNameFormat = (time) => {
-          let month = `${time.getMonth() + 1}`;
-          if (month.length === 1) {
-            month = '0' + month;
-          }
-
-          let date  = `${time.getDate()}`;
-          if (date.length === 1) {
-            date  = '0' + date;
-          }
-
-          let year  = `${time.getFullYear()}`;
-          if (year.length === 1) {
-            year  = '0' + year;
-          }
-
-          return `${date}-${month}-${year}.log`;
-        };
+    /* fileNameFormat - Log file name */
+    if (this.options.fileNameFormat) {
+      if (!_.isFunction(this.options.fileNameFormat)) {
+        throw new Meteor.Error('[LoggerFile] [options.fileNameFormat] Must be a Function!');
       }
+    } else {
+      this.options.fileNameFormat = (time) => {
+        let month = `${time.getMonth() + 1}`;
+        if (month.length === 1) {
+          month = '0' + month;
+        }
+
+        let date  = `${time.getDate()}`;
+        if (date.length === 1) {
+          date  = '0' + date;
+        }
+
+        let year  = `${time.getFullYear()}`;
+        if (year.length === 1) {
+          year  = '0' + year;
+        }
+
+        return `${date}-${month}-${year}.log`;
+      };
 
       /* format - Log record format */
       if (this.options.format) {
@@ -111,20 +104,18 @@ class LoggerFile {
     }
 
     this.logger.add('File', (level, message, data = null, userId) => {
-      if (Meteor.isServer) {
-        const time = new Date();
-        let _data  = null;
+      const time = new Date();
+      let _data  = null;
 
-        if (data) {
-          _data = this.logger.antiCircular(_.clone(data));
-          if (_.isString(_data.stackTrace)) {
-            _data.stackTrace = _data.stackTrace.split(/\n|\\n|\r|\r\n/g);
-          }
-          _data = JSON.stringify(_data, false, 2);
+      if (data) {
+        _data = this.logger.antiCircular(_.clone(data));
+        if (_.isString(_data.stackTrace)) {
+          _data.stackTrace = _data.stackTrace.split(/\n|\\n|\r|\r\n/g);
         }
-
-        fs.appendFile(`${this.options.path}/${this.options.fileNameFormat(time)}`, this.options.format(time, level, message, _data, userId), NOOP);
+        _data = JSON.stringify(_data, false, 2);
       }
+
+      fs.appendFile(`${this.options.path}/${this.options.fileNameFormat(time)}`, this.options.format(time, level, message, _data, userId), NOOP);
     }, NOOP, false, false);
   }
 
