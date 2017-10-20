@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "fs-extra": {
-      "version": "4.0.1",
-      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-4.0.1.tgz",
-      "from": "fs-extra@4.0.1"
+      "version": "4.0.2",
+      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-4.0.2.tgz",
+      "from": "fs-extra@4.0.2"
     },
     "graceful-fs": {
       "version": "4.1.11",
@@ -11,9 +11,9 @@
       "from": "graceful-fs@>=4.1.2 <5.0.0"
     },
     "jsonfile": {
-      "version": "3.0.1",
-      "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-3.0.1.tgz",
-      "from": "jsonfile@>=3.0.0 <4.0.0"
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-4.0.0.tgz",
+      "from": "jsonfile@>=4.0.0 <5.0.0"
     },
     "universalify": {
       "version": "0.1.1",
