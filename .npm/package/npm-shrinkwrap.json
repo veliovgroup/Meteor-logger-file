@@ -1,24 +1,25 @@
 {
+  "lockfileVersion": 1,
   "dependencies": {
     "fs-extra": {
-      "version": "4.0.2",
-      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-4.0.2.tgz",
-      "from": "fs-extra@4.0.2"
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-4.0.3.tgz",
+      "integrity": "sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg=="
     },
     "graceful-fs": {
       "version": "4.1.11",
       "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.1.11.tgz",
-      "from": "graceful-fs@>=4.1.2 <5.0.0"
+      "integrity": "sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg="
     },
     "jsonfile": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-4.0.0.tgz",
-      "from": "jsonfile@>=4.0.0 <5.0.0"
+      "integrity": "sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss="
     },
     "universalify": {
       "version": "0.1.1",
       "resolved": "https://registry.npmjs.org/universalify/-/universalify-0.1.1.tgz",
-      "from": "universalify@>=0.1.0 <0.2.0"
+      "integrity": "sha1-+nG63UQ3r0wUiEHjs7Fl+enlkLc="
     }
   }
 }
