@@ -62,11 +62,11 @@ const log = new Logger();
 
 // Initialize LoggerFile:
 const LogFile = new LoggerFile(log, {
-  fileNameFormat: function(time) {
+  fileNameFormat(time) {
     // Create log-files hourly
     return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
   },
-  format: function(time, level, message, data, userId) {
+  format(time, level, message, data, userId) {
     // Omit Date and hours from messages
     return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
   },
@@ -132,7 +132,7 @@ window.onerror = (msg, url, line) => {
 ### Catch-all Server's errors example: [*Server*]
 ```jsx
 const bound = Meteor.bindEnvironment((callback) => {callback();});
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err) => {
   bound(() => {
     log.error("Server Crashed!", err);
     console.error(err.stack);
@@ -165,10 +165,10 @@ const log2 = new Logger();
 (new LoggerFile(log1)).enable();
 
 (new LoggerFile(log2, {
-  fileNameFormat: function(time) {
+  fileNameFormat(time) {
     return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
   },
-  format: function(time, level, message, data, userId) {
+  format(time, level, message, data, userId) {
     return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
   },
   path: '/data/logs/'
