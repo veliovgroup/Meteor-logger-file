@@ -5,14 +5,59 @@ import { Logger, LoggerMessage } from 'meteor/ostrio:logger';
 
 let fs           = {};
 const log        = new Logger();
+const log1       = new Logger();
+const log2       = new Logger();
+const log3       = new Logger();
 const fileLogger = (new LoggerFile(log)).enable();
 const testPath   = (Meteor.isServer) ? fileLogger.options.path : '';
 const testFile   = (Meteor.isServer) ? fileLogger.options.fileNameFormat(new Date()) : '';
 
 if (Meteor.isServer) {
   fs = require('fs-extra');
-  fs.removeSync(`${testPath}/${testFile}`);
+  try {
+    fs.removeSync(`${testPath}/${testFile}`);
+  } catch (e) {
+    console.info('[fs.removeSync] error:', e);
+  }
   console.log(process.cwd());
+
+  const fileLoggerCustom = (new LoggerFile(log1, {
+    fileNameFormat(time) {
+      return 'fileLoggerCustomN ' + (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
+    },
+    format(time, level, message, data, userId) {
+      return 'fileLoggerCustomF [' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \' + message + \' | User: ' + userId + '\r\n';
+    }
+  })).enable();
+
+  const customNResult = (Meteor.isServer) ? fileLoggerCustom.options.fileNameFormat(new Date()) : '';
+  const customFResult  = (Meteor.isServer) ? fileLoggerCustom.options.format(new Date()) : '';
+  Tinytest.add('[Custom N+F] Custom Name Format Result', (test) => {
+    test.isTrue(!!~customNResult.indexOf('fileLoggerCustomN'), customNResult);
+    test.isTrue(!!~customFResult.indexOf('fileLoggerCustomF'), customFResult);
+  });
+
+  const fileLoggerCustomFormat = (new LoggerFile(log2, {
+    format(time, level, message, data, userId) {
+      return 'fileLoggerCustomFormat [' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \' + message + \' | User: ' + userId + '\r\n';
+    }
+  })).enable();
+
+  const customFormatResult = (Meteor.isServer) ? fileLoggerCustomFormat.options.format(new Date()) : '';
+  Tinytest.add('[Custom F] Custom Name Format Result', (test) => {
+    test.isTrue(!!~customFormatResult.indexOf('fileLoggerCustomFormat'), customFormatResult);
+  });
+
+  const fileLoggerCustomNameFormat = (new LoggerFile(log3, {
+    fileNameFormat(time) {
+      return 'fileLoggerCustomNameFormat ' + (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
+    }
+  })).enable();
+
+  const customNameFormatResult = (Meteor.isServer) ? fileLoggerCustomNameFormat.options.fileNameFormat(new Date()) : '';
+  Tinytest.add('[Custom N] Custom Name Format Result', (test) => {
+    test.isTrue(!!~customNameFormatResult.indexOf('fileLoggerCustomNameFormat'), customNameFormatResult);
+  });
 }
 
 Tinytest.add('LoggerMessage Instance', (test) => {
@@ -142,14 +187,14 @@ Tinytest.addAsync('Check written data, without {data} [From CLIENT to SERVER]', 
   if (Meteor.isServer) {
     Meteor.setTimeout(() => {
       const logzzz = fs.readFileSync(`${testPath}/${testFile}`).toString('utf8');
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "info"'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "debug"'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "error"'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "fatal"'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "warn"'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "trace"'));
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "info""'), 'cwdwodfc2s Test "info""');
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "debug""'), 'cwdwodfc2s Test "debug""');
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "error""'), 'cwdwodfc2s Test "error""');
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "fatal""'), 'cwdwodfc2s Test "fatal""');
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "warn""'), 'cwdwodfc2s Test "warn""');
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "trace""'), 'cwdwodfc2s Test "trace""');
       test.isTrue(!!~logzzz.indexOf('stackTrace'));
-      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "_"'));
+      test.isTrue(!!~logzzz.indexOf('cwdwodfc2s Test "_""'), 'cwdwodfc2s Test "_""');
       done();
     }, 2048);
   } else {
