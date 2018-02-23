@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:loggerfile',
-  version: '2.0.4',
+  version: '2.0.5',
   summary: 'Logging: Store application\'s logs into file (Server & Client support)',
   git: 'https://github.com/VeliovGroup/Meteor-logger-file',
   documentation: 'README.md'
@@ -17,7 +17,7 @@ Package.onUse(function(api) {
 
 Package.onTest(function(api) {
   api.use('tinytest');
-  api.use(['ecmascript', 'underscore', 'ostrio:logger@2.0.6', 'ostrio:loggerfile']);
+  api.use(['ecmascript', 'underscore', 'ostrio:logger', 'ostrio:loggerfile']);
   api.addFiles('loggerfile-tests.js');
 });
 
