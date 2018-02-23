@@ -25,7 +25,10 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
 
 ## FAQ:
  - __Q__: Where to find the log file?
- - __A__: On dev stage: `/static/logs`. On prod stage: `/assets/app/logs`. Change this behavior with `options.path` (*see below*)
+    - __A__: On dev stage: `/static/logs`. On prod stage: `/assets/app/logs`. Change this behavior with `options.path` (*see below*)
+ - __Q__: Log files are gone, why?
+    - __A__: __All logs will be removed as soon as your application rebuilds or you run__ `meteor reset`. To keep your logs persistent during development use an absolute `path` outside of your project folder, e.g. `/logs` directory. Make sure selected directory is writable by node/meteor's process owner
+
 
 ## Usage
 ### Initialization [*Isomorphic*]
