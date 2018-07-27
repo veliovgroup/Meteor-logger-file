@@ -17,6 +17,9 @@ const helpers = {
   isFunction(obj) {
     return typeof obj === 'function' || false;
   },
+  isString(obj) {
+    return Object.prototype.toString.call(obj) === '[object String]';
+  },
   clone(obj) {
     if (!this.isObject(obj)) return obj;
     return this.isArray(obj) ? obj.slice() : Object.assign({}, obj);
