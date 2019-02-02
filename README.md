@@ -28,17 +28,18 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
 ```
 
 ## FAQ:
+
 - __Q__: Where to find the log file?
   - __A__: On dev stage: `/static/logs`. On prod stage: `/assets/app/logs`. Change this behavior with `options.path` (*see below*)
 - __Q__: Log files are gone, why?
   - __A__: __All logs will be removed as soon as your application rebuilds or you run__ `meteor reset`. To keep your logs persistent during development use an absolute `path` outside of your project folder, e.g. `/logs` directory. Make sure selected directory is writable by node/meteor's process owner
-
 
 ## Usage
 
 ### Initialization [*Isomorphic*]
 
 `new LoggerFile(LoggerInstance, options)`
+
 - `LoggerInstance` {*Logger*} - from `new Logger()`
 - `options` {*Object*}
 - `options.fileNameFormat` {*Function*} - Log file name, use to adjust file creation frequency, arguments:
@@ -75,11 +76,11 @@ const log = new Logger();
 const LogFile = new LoggerFile(log, {
   fileNameFormat(time) {
     // Create log-files hourly
-    return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
+    return (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
   },
   format(time, level, message, data, userId) {
     // Omit Date and hours from messages
-    return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
+    return '[' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \'' + message + '\' | User: ' + userId + '\r\n';
   },
   path: '/data/logs/' // Use absolute storage path
 });
@@ -149,11 +150,11 @@ window.onerror = (msg, url, line) => {
 const bound = Meteor.bindEnvironment((callback) => {callback();});
 process.on('uncaughtException', (err) => {
   bound(() => {
-    log.error("Server Crashed!", err);
+    log.error('Server Crashed!', err);
     console.error(err.stack);
     process.exit(7);
   });
-};
+});
 ```
 
 ### Catch-all Meteor's errors example: [*Server*]
@@ -182,10 +183,10 @@ const log2 = new Logger();
 
 (new LoggerFile(log2, {
   fileNameFormat(time) {
-    return (time.getDate()) + "-" + (time.getMonth() + 1) + "-" + (time.getFullYear()) + "_" + (time.getHours()) + ".log";
+    return (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
   },
   format(time, level, message, data, userId) {
-    return "[" + level + "] | " + (time.getMinutes()) + ":" + (time.getSeconds()) + " | \"" + message + "\" | User: " + userId + "\r\n";
+    return '[' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \'' + message + '\' | User: ' + userId + '\r\n';
   },
   path: '/data/logs/'
 })).enable();
@@ -193,10 +194,10 @@ const log2 = new Logger();
 
 ## Support this awesome package:
 
- - Star on [GitHub](https://github.com/VeliovGroup/Meteor-logger-file)
- - Star on [Atmosphere](https://atmospherejs.com/ostrio/loggerfile)
- - [Tweet](https://twitter.com/share?url=https://github.com/VeliovGroup/Meteor-logger-file&text=Store%20%23meteorjs%20log%20messages%20(from%20Client%20%26%20Server)%20in%20the%20file%20%23javascript%20%23programming%20%23webdev%20via%20%40VeliovGroup)
- - Share on [Facebook](https://www.facebook.com/sharer.php?u=https://github.com/VeliovGroup/Meteor-logger-file)
+- Star on [GitHub](https://github.com/VeliovGroup/Meteor-logger-file)
+- Star on [Atmosphere](https://atmospherejs.com/ostrio/loggerfile)
+- [Tweet](https://twitter.com/share?url=https://github.com/VeliovGroup/Meteor-logger-file&text=Store%20%23meteorjs%20log%20messages%20(from%20Client%20%26%20Server)%20in%20the%20file%20%23javascript%20%23programming%20%23webdev%20via%20%40VeliovGroup)
+- Share on [Facebook](https://www.facebook.com/sharer.php?u=https://github.com/VeliovGroup/Meteor-logger-file)
 
 ## Support our open source contribution:
 
