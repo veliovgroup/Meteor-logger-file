@@ -162,7 +162,7 @@ process.on('uncaughtException', (err) => {
 ```js
 // store original Meteor error
 const originalMeteorDebug = Meteor._debug;
-Meteor._debug = (message, stack) => {
+Meteor._debug = function (message, stack) {
   const error = new Error(message);
   error.stack = stack;
   log.error('Meteor Error!', error);
@@ -190,6 +190,18 @@ const log2 = new Logger();
   },
   path: '/data/logs/'
 })).enable();
+```
+
+## Running Tests
+
+ 1. Clone this package
+ 2. In Terminal (*Console*) go to directory where package is cloned
+ 3. Then run:
+
+### Meteor/Tinytest
+
+```shell
+meteor test-packages ./
 ```
 
 ## Support this awesome package:
