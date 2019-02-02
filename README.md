@@ -136,7 +136,7 @@ throw log.error(message, data, userId);
 /* Store original window.onerror */
 const _GlobalErrorHandler = window.onerror;
 
-window.onerror = (msg, url, line) => {
+window.onerror = function (msg, url, line) {
   log.error(msg, {file: url, onLine: line});
   if (_GlobalErrorHandler) {
     _GlobalErrorHandler.apply(this, arguments);
