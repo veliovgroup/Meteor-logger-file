@@ -2,6 +2,8 @@ import { Meteor }       from 'meteor/meteor';
 import { Logger }       from 'meteor/ostrio:logger';
 import { check, Match } from 'meteor/check';
 import fs               from 'fs-extra';
+import nodePath         from 'path';
+
 const NOOP = () => {};
 
 const helpers = {
@@ -113,21 +115,22 @@ class LoggerFile {
         throw new Meteor.Error('[LoggerFile] [options.path] Must be a String!');
       }
     } else {
-      this.options.path = Meteor.rootPath + ((process.env.NODE_ENV === 'development') ? '/static/logs' : '/assets/app/logs');
+      this.options.path = Meteor.rootPath + ((process.env.NODE_ENV === 'development') ? `${nodePath.sep}static${nodePath.sep}logs` : `${nodePath.sep}assets${nodePath.sep}app${nodePath.sep}logs`);
     }
 
-    this.options.path = this.options.path.replace(/\/$/, '');
+    const pathRegExp  = new RegExp(`${nodePath.sep}$`);
+    this.options.path = this.options.path.replace(pathRegExp, '');
 
     fs.ensureDir(`${this.options.path}`, (EDError) => {
       if (EDError) {
         throw new Meteor.Error('[LoggerFile] [options.path] Error:', EDError);
       }
 
-      fs.writeFile(`${this.options.path}/test`, 'test', (WFError) => {
+      fs.writeFile(`${this.options.path}${nodePath.sep}test`, 'test', (WFError) => {
         if (WFError) {
           throw new Meteor.Error(`[LoggerFile] [options.path] ${this.options.path} is not writable!!!`, WFError);
         }
-        fs.unlink(`${this.options.path}/test`, NOOP);
+        fs.unlink(`${this.options.path}${nodePath.sep}test`, NOOP);
       });
     });
 
@@ -143,7 +146,7 @@ class LoggerFile {
         _data = JSON.stringify(_data, false, 2);
       }
 
-      fs.appendFile(`${this.options.path}/${this.options.fileNameFormat(time)}`, this.options.format(time, level, message, _data, userId), NOOP);
+      fs.appendFile(`${this.options.path}${nodePath.sep}${this.options.fileNameFormat(time)}`, this.options.format(time, level, message, _data, userId), NOOP);
     }, NOOP, false, false);
   }
 

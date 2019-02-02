@@ -6,6 +6,7 @@ File adapter for [logger driver](https://github.com/VeliovGroup/Meteor-logger). 
 
 Features:
 
+- 🤓 Support Windows, Linux, and MacOS environments;
 - 👷‍♂️ 100% tests coverage;
 - 💪 Flexible log level filters;
 - 👨‍💻 `userId` is automatically passed and logged, data is associated with logged-in user;
