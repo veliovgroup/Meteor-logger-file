@@ -42,12 +42,15 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
 
 ## Usage
 
+Initialize `Logger` instance and pass it into `LoggerInstance` constructor to enable logging into the log file.
+
 ### Initialization [*Isomorphic*]
 
 `new LoggerFile(LoggerInstance, options)`
 
 - `LoggerInstance` {*Logger*} - from `new Logger()`
 - `options` {*Object*}
+- `options.path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, __note:__ do not use '~' (path relative to user)
 - `options.fileNameFormat` {*Function*} - Log file name, use to adjust file creation frequency, arguments:
   - `time` {*Date*}
 - `options.format` {*Function*} - Log record format, arguments:
@@ -57,7 +60,6 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
   - `data` {*Object*}
   - `userId` {*String*} - set if user is logged in and package `accounts-base` is installed
   - __Note:__ Do not forget `\r\n` at the end of record-line
-- `options.path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, __note:__ do not use '~' (path relative to user)
 
 #### Example:
 
