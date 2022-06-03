@@ -6,7 +6,7 @@
 
 # Logging: To File
 
-File adapter for [logger driver](https://github.com/VeliovGroup/Meteor-logger). Store application log messages (from both *Client* and *Server*) in the file. By default log file is rotated daily, you can easily adjust it to hourly, monthly, or any other period, via `fileNameFormat`.
+File adapter for [logger driver](https://github.com/veliovgroup/Meteor-logger). Store application log messages (from both *Client* and *Server*) in the file. By default log file is rotated daily, you can easily adjust it to hourly, monthly, or any other period, via `fileNameFormat`.
 
 *Whenever you log message(s) on Client or Sever, it goes directly to a log file on your Server.*
 
@@ -214,10 +214,10 @@ meteor test-packages ./
 
 ## Support this awesome package:
 
-- Star on [GitHub](https://github.com/VeliovGroup/Meteor-logger-file)
+- Star on [GitHub](https://github.com/veliovgroup/Meteor-logger-file)
 - Star on [Atmosphere](https://atmospherejs.com/ostrio/loggerfile)
-- [Tweet](https://twitter.com/share?url=https://github.com/VeliovGroup/Meteor-logger-file&text=Store%20%23meteorjs%20log%20messages%20in%20the%20file%20%23javascript%20%23programming%20%23webdev%20via%20%40VeliovGroup)
-- Share on [Facebook](https://www.facebook.com/sharer.php?u=https://github.com/VeliovGroup/Meteor-logger-file)
+- [Tweet](https://twitter.com/share?url=https://github.com/veliovgroup/Meteor-logger-file&text=Store%20%23meteorjs%20log%20messages%20in%20the%20file%20%23javascript%20%23programming%20%23webdev%20via%20%40veliovgroup)
+- Share on [Facebook](https://www.facebook.com/sharer.php?u=https://github.com/veliovgroup/Meteor-logger-file)
 
 ## Support our open source contribution:
 

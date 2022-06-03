@@ -2,7 +2,7 @@ Package.describe({
   name: 'ostrio:loggerfile',
   version: '2.1.0',
   summary: 'Logging: Store application\'s logs into file (Server & Client support)',
-  git: 'https://github.com/VeliovGroup/Meteor-logger-file',
+  git: 'https://github.com/veliovgroup/Meteor-logger-file',
   documentation: 'README.md'
 });
 

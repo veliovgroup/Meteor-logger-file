@@ -1,3 +1,3 @@
 Changelog
 =========
-For full package history, please see [releases at GitHub](https://github.com/VeliovGroup/Meteor-logger-file/releases)
+For full package history, please see [releases at GitHub](https://github.com/veliovgroup/Meteor-logger-file/releases)
