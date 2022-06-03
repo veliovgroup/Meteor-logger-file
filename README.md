@@ -81,20 +81,20 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
 const log = new Logger();
 
 // Initialize LoggerFile:
-const LogFile = new LoggerFile(log, {
+const logFile = new LoggerFile(log, {
   fileNameFormat(time) {
-    // Create log-files hourly
-    return (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
+    // Create/Rotate log-files hourly
+    return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}_${time.getHours()}.log`;
   },
   format(time, level, message, data, userId) {
     // Omit Date and hours from messages
-    return '[' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \'' + message + '\' | User: ' + userId + '\r\n';
+    return `[${level}] | ${time.getMinutes()}:${time.getSeconds()} | ${message}' | User: ${userId}\n`;
   },
   path: '/data/logs/' // Use absolute storage path
 });
 
 // Enable LoggerFile with default settings
-LogFile.enable();
+logFile.enable();
 ```
 
 ### Activate and set adapter settings: [*Isomorphic*]
@@ -194,7 +194,7 @@ const log2 = new Logger();
     return (time.getDate()) + '-' + (time.getMonth() + 1) + '-' + (time.getFullYear()) + '_' + (time.getHours()) + '.log';
   },
   format(time, level, message, data, userId) {
-    return '[' + level + '] | ' + (time.getMinutes()) + ':' + (time.getSeconds()) + ' | \'' + message + '\' | User: ' + userId + '\r\n';
+    return `[${level}] | ${time.getMinutes()}:${time.getSeconds()} | ${message}' | User: ${userId}\n`;
   },
   path: '/data/logs/'
 })).enable();
