@@ -16,6 +16,6 @@ Package.onUse((api) => {
 
 Package.onTest((api) => {
   api.use('tinytest');
-  api.use(['ecmascript', 'ostrio:logger', 'ostrio:loggerfile']);
+  api.use(['ecmascript', 'check', 'ostrio:logger', 'ostrio:loggerfile']);
   api.addFiles('loggerfile-tests.js');
 });

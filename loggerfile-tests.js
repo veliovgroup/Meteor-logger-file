@@ -1,6 +1,6 @@
 import { Meteor }                from 'meteor/meteor';
-import { LoggerFile }            from 'meteor/ostrio:loggerfile';
 import { Logger, LoggerMessage } from 'meteor/ostrio:logger';
+import { LoggerFile }            from 'meteor/ostrio:loggerfile';
 
 let fs           = {};
 const log        = new Logger();

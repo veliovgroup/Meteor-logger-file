@@ -24,6 +24,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v6
 
+      - name: checkout core logger
+        uses: actions/checkout@v6
+        with:
+          repository: veliovgroup/Meteor-logger
+          path: deps/ostrio-logger
+          ref: master
+
       - name: Setup meteor
         uses: meteorengineer/setup-meteor@v2
         with:
@@ -36,4 +43,5 @@ jobs:
       - name: Run Tests
         run: |
           export NODE_TLS_REJECT_UNAUTHORIZED=0
+          export METEOR_PACKAGE_DIRS="${{ github.workspace }}/deps"
           mtest --package ./ --once ${{ matrix.meteor }}
