@@ -1,4 +1,3 @@
-import { _ }                     from 'meteor/underscore';
 import { Meteor }                from 'meteor/meteor';
 import { LoggerFile }            from 'meteor/ostrio:loggerfile';
 import { Logger, LoggerMessage } from 'meteor/ostrio:logger';
@@ -100,13 +99,13 @@ Tinytest.add('Log a Number', (test) => {
 });
 
 Tinytest.add('Log a null', (test) => {
-  test.instanceOf(log.info(10, null), LoggerMessage);
-  test.instanceOf(log.debug(20, null), LoggerMessage);
-  test.instanceOf(log.error(30, null), LoggerMessage);
-  test.instanceOf(log.fatal(40, null), LoggerMessage);
-  test.instanceOf(log.warn(50, null), LoggerMessage);
-  test.instanceOf(log.trace(60, null), LoggerMessage);
-  test.instanceOf(log._(70, null), LoggerMessage);
+  test.instanceOf(log.info(10, {}), LoggerMessage);
+  test.instanceOf(log.debug(20, {}), LoggerMessage);
+  test.instanceOf(log.error(30, {}), LoggerMessage);
+  test.instanceOf(log.fatal(40, {}), LoggerMessage);
+  test.instanceOf(log.warn(50, {}), LoggerMessage);
+  test.instanceOf(log.trace(60, {}), LoggerMessage);
+  test.instanceOf(log._(70, {}), LoggerMessage);
 });
 
 Tinytest.add('Log a Object', (test) => {
@@ -145,7 +144,7 @@ Tinytest.add('Log Boolean message', (test) => {
   test.instanceOf(log.error('error', false), LoggerMessage);
   test.instanceOf(log.fatal('fatal', false), LoggerMessage);
   test.instanceOf(log.warn('warn', true), LoggerMessage);
-  test.instanceOf(log.trace('trace', true), LoggerMessage);
+  test.instanceOf(log.trace('trace', {value: true}), LoggerMessage);
   test.instanceOf(log._('_', true), LoggerMessage);
 });
 
@@ -199,8 +198,9 @@ Tinytest.addAsync('Log a Circular', (test, done) => {
 
 Tinytest.add('Trace', (test) => {
   if (Meteor.isServer) {
-    test.isTrue(_.has(log.trace(602, {data: 602}).details, 'stackTrace'));
-    test.isTrue(_.has(log.trace(602, {data: 602}).data, 'stackTrace'));
+    const traced = log.trace(602, {data: 602});
+    test.isTrue(Object.prototype.hasOwnProperty.call(traced.details, 'stackTrace'));
+    test.isTrue(Object.prototype.hasOwnProperty.call(traced.data, 'stackTrace'));
   } else {
     test.isTrue(true);
   }
@@ -337,3 +337,55 @@ Tinytest.addAsync('Check written data, with data [From CLIENT to SERVER]', (test
     done();
   }
 });
+
+if (Meteor.isServer) {
+  Tinytest.addAsync('enable filter ERROR only', (test, done) => {
+    const logFilter = new Logger();
+    const filterLogger = (new LoggerFile(logFilter)).enable({filter: ['ERROR']});
+    const filterFile = filterLogger.options.fileNameFormat(new Date());
+    const filterPath = `${filterLogger.options.path}/${filterFile}`;
+    try {
+      fs.rmSync(filterPath);
+    } catch (e) {
+      // ignore
+    }
+    logFilter.info('file-filter-skip-info');
+    logFilter.error('file-filter-keep-error');
+    Meteor.setTimeout(() => {
+      const content = fs.readFileSync(filterPath).toString('utf8');
+      test.isFalse(!!~content.indexOf('file-filter-skip-info'));
+      test.isTrue(!!~content.indexOf('file-filter-keep-error'));
+      try {
+        fs.rmSync(filterPath);
+      } catch (e) {
+        // ignore
+      }
+      done();
+    }, 256);
+  });
+
+  Tinytest.addAsync('enable false stops writes', (test, done) => {
+    const logOff = new Logger();
+    const offLogger = new LoggerFile(logOff);
+    const offFile = offLogger.options.fileNameFormat(new Date());
+    const offPath = `${offLogger.options.path}/${offFile}`;
+    try {
+      fs.rmSync(offPath);
+    } catch (e) {
+      // ignore
+    }
+    offLogger.enable({enable: false});
+    logOff.info('disabled-write');
+    Meteor.setTimeout(() => {
+      let exists = false;
+      try {
+        fs.accessSync(offPath);
+        exists = true;
+      } catch (e) {
+        exists = false;
+      }
+      test.isFalse(exists);
+      done();
+    }, 256);
+  });
+}

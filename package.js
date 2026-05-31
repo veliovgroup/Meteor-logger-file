@@ -7,15 +7,15 @@ Package.describe({
 });
 
 Package.onUse((api) => {
-  api.versionsFrom('2.3');
+  api.versionsFrom(['2.14', '2.15', '2.16', '3.2', '3.3.1', '3.4']);
   api.use('ostrio:meteor-root@1.1.1', 'server');
-  api.use(['ecmascript', 'check', 'ostrio:logger@2.1.1'], ['client', 'server']);
+  api.use(['ecmascript', 'check', 'ostrio:logger'], ['client', 'server']);
   api.mainModule('client.js', 'client');
   api.mainModule('server.js', 'server');
 });
 
 Package.onTest((api) => {
   api.use('tinytest');
-  api.use(['ecmascript', 'underscore', 'ostrio:logger', 'ostrio:loggerfile']);
+  api.use(['ecmascript', 'ostrio:logger', 'ostrio:loggerfile']);
   api.addFiles('loggerfile-tests.js');
 });
