@@ -26,6 +26,19 @@ meteor add ostrio:logger # If not yet installed
 meteor add ostrio:loggerfile
 ```
 
+### Compatibility
+
+- Meteor **2.14–3.4**
+- Meteor 3 requires `ostrio:logger` **≥ 2.2.0**
+
+### Agent skill
+
+```bash
+npx skills add veliovgroup/Meteor-logger --skill meteor-logger -g
+```
+
+Covers `ostrio:logger` and all adapters.
+
 ## ES6 Import:
 
 ```js
@@ -39,6 +52,8 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
   - __A__: On dev stage: `/static/logs`. On prod stage: `/assets/app/logs`. Change this behavior with `options.path` (*see below*)
 - __Q__: Log files are gone, why?
   - __A__: __All logs will be removed as soon as your application rebuilds or you run__ `meteor reset`. To keep your logs persistent during development use an absolute `path` outside of your project folder, e.g. `/logs` directory. Make sure selected directory is writable by node/meteor's process owner
+- __Q__: Meteor Up / Docker — folder exists but no `.log` files?
+  - __A__: Use an **absolute** path outside the bundle (e.g. `/var/log/myapp`), not `./logs/` relative to the server process. Enable `debug: true` to print the resolved path at startup. Handle failures with `onError` (*see below*)
 
 ## Usage
 
@@ -50,7 +65,9 @@ Initialize `Logger` instance and pass it into `LoggerInstance` constructor to en
 
 - `LoggerInstance` {*Logger*} - from `new Logger()`
 - `options` {*Object*}
-- `options.path` {*String*} - Log's storage path, absolute, or relative to NodeJS process, __note:__ do not use '~' (path relative to user)
+- `options.path` {*String*} - Log directory. Prefer an **absolute** path (e.g. `/data/logs`) in production; relative paths resolve against the Node process CWD (Meteor Up: often `programs/server` inside the bundle). Do not use `~`
+- `options.debug` {*Boolean*} - If `true`, log resolved `path` to stdout after the write test succeeds (default: `false`)
+- `options.onError` {*Function*} - `(error, context) => void` — called on `mkdir`, `writeTest`, or `appendFile` failures (`context` is one of those strings). Default: `console.error`
 - `options.fileNameFormat` {*Function*} - Log file name, use to adjust file creation frequency, arguments:
   - `time` {*Date*}
 - `options.format` {*Function*} - Log record format, arguments:
@@ -90,7 +107,11 @@ const logFile = new LoggerFile(log, {
     // Omit Date and hours from messages
     return `[${level}] | ${time.getMinutes()}:${time.getSeconds()} | ${message}' | User: ${userId}\n`;
   },
-  path: '/data/logs/' // Use absolute storage path
+  path: '/data/logs/', // Absolute path (recommended for production / MUP)
+  debug: true,
+  onError(error, context) {
+    console.error('[LoggerFile]', context, error);
+  }
 });
 
 // Enable LoggerFile with default settings

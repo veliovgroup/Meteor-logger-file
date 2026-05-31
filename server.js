@@ -47,6 +47,8 @@ class LoggerFile {
 
     this.logger = logger;
     this.options = options;
+    this._ready = false;
+    this._pending = [];
 
     /* fileNameFormat - Log file name */
     if (this.options.fileNameFormat) {
@@ -130,16 +132,40 @@ class LoggerFile {
     const pathRegExp = new RegExp(`${nodePath.sep}$`);
     this.options.path = nodePath.resolve(this.options.path.replace(pathRegExp, ''));
 
+    const reportError = (error, context) => {
+      if (helpers.isFunction(this.options.onError)) {
+        this.options.onError(error, context);
+        return;
+      }
+      console.error(`[LoggerFile] [${context}]`, error);
+    };
+
+    const markReady = () => {
+      this._ready = true;
+      if (this.options.debug) {
+        console.log(`[LoggerFile] path: ${this.options.path}`);
+      }
+      const pending = this._pending.splice(0);
+      for (let i = 0; i < pending.length; i++) {
+        pending[i]();
+      }
+    };
+
+    const testFilePath = `${this.options.path}${nodePath.sep}test`;
+
     fs.mkdir(this.options.path, { recursive: true }, (mkdError) => {
       if (mkdError) {
-        throw new Meteor.Error('[LoggerFile] [options.path] Error:', mkdError);
+        reportError(mkdError, 'mkdir');
+        return;
       }
 
-      fs.writeFile(`${this.options.path}${nodePath.sep}test`, 'test', (wfError) => {
+      fs.writeFile(testFilePath, 'test', (wfError) => {
         if (wfError) {
-          throw new Meteor.Error(`[LoggerFile] [options.path] ${this.options.path} is not writable!!!`, wfError);
+          reportError(wfError, 'writeTest');
+          return;
         }
-        fs.unlink(`${this.options.path}${nodePath.sep}test`, noop);
+        fs.unlink(testFilePath, noop);
+        markReady();
       });
     });
 
@@ -152,7 +178,21 @@ class LoggerFile {
         }
       }
 
-      fs.appendFile(`${this.options.path}${nodePath.sep}${this.options.fileNameFormat(time)}`, this.options.format(time, level, message, data, userId), noop);
+      const write = () => {
+        const filePath = `${this.options.path}${nodePath.sep}${this.options.fileNameFormat(time)}`;
+        const line = this.options.format(time, level, message, data, userId);
+        fs.appendFile(filePath, line, (appendError) => {
+          if (appendError) {
+            reportError(appendError, 'appendFile');
+          }
+        });
+      };
+
+      if (this._ready) {
+        write();
+      } else {
+        this._pending.push(write);
+      }
     }, noop, false, false);
   }
 

@@ -388,4 +388,52 @@ if (Meteor.isServer) {
       done();
     }, 256);
   });
+
+  Tinytest.addAsync('onError when path is not a directory', (test, done) => {
+    const logErr = new Logger();
+    const blocker = `${testPath}/loggerfile-blocker`;
+    fs.writeFileSync(blocker, 'x');
+    let onErrorCalled = false;
+    let onErrorContext = '';
+
+    new LoggerFile(logErr, {
+      path: blocker,
+      onError(error, context) {
+        onErrorCalled = true;
+        onErrorContext = context;
+      }
+    }).enable();
+
+    Meteor.setTimeout(() => {
+      test.isTrue(onErrorCalled, 'onError should run when path is not writable');
+      test.isTrue(['mkdir', 'writeTest'].includes(onErrorContext), onErrorContext);
+      fs.rmSync(blocker);
+      done();
+    }, 512);
+  });
+
+  Tinytest.addAsync('debug logs resolved path', (test, done) => {
+    const logDbg = new Logger();
+    const debugPath = `${testPath}/loggerfile-debug`;
+    const debugLogs = [];
+    const originalLog = console.log;
+
+    console.log = function (...args) {
+      debugLogs.push(args.join(' '));
+      return originalLog.apply(console, args);
+    };
+
+    new LoggerFile(logDbg, {
+      path: debugPath,
+      debug: true
+    }).enable();
+
+    Meteor.setTimeout(() => {
+      console.log = originalLog;
+      const line = debugLogs.find((entry) => entry.indexOf('[LoggerFile] path:') !== -1);
+      test.isTrue(!!line, debugLogs.join(' | '));
+      test.isTrue(line.indexOf(debugPath) !== -1, line);
+      done();
+    }, 512);
+  });
 }
