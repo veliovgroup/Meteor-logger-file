@@ -116,7 +116,8 @@ class LoggerFile {
           // Something is off about data object
         }
 
-        return `${date}-${month}-${year} ${hours}:${mins}:${sec} | [${level}] | Message: \"${message}\" | User: ${userId} | data: ${data}\n`;
+        const esc = (s) => String(s).replace(/[\\"]/g, '\\$&');
+        return `${date}-${month}-${year} ${hours}:${mins}:${sec} | [${level}] | Message: "${esc(message)}" | User: ${userId} | data: ${data}\n`;
       };
     }
 
